@@ -1,4 +1,5 @@
 import { PrismaClient, Role } from '@prisma/client';
+import * as bcrypt from 'bcrypt';
 
 const prisma = new PrismaClient();
 
@@ -40,10 +41,16 @@ async function main() {
   await prisma.genre.deleteMany();
   await prisma.user.deleteMany();
 
+  // Demo credentials (change before any real deployment)
+  const [librarianHash, patronHash] = await Promise.all([
+    bcrypt.hash('Librarian123!', 10),
+    bcrypt.hash('Patron123!', 10),
+  ]);
+
   await prisma.user.createMany({
     data: [
-      { email: 'librarian@library.test', name: 'Lena Librarian', role: Role.LIBRARIAN },
-      { email: 'patron@library.test', name: 'Paul Patron', role: Role.PATRON },
+      { email: 'librarian@library.test', name: 'Lena Librarian', role: Role.LIBRARIAN, password: librarianHash },
+      { email: 'patron@library.test', name: 'Paul Patron', role: Role.PATRON, password: patronHash },
     ],
   });
 

@@ -16,6 +16,7 @@ model User {
   id        Int      @id @default(autoincrement())
   email     String   @unique
   name      String
+  password  String
   role      Role     @default(PATRON)
   createdAt DateTime @default(now())
   reviews   Review[]
@@ -55,4 +56,3 @@ model Review {
   createdAt DateTime @default(now())
 
   @@unique([bookId, userId]) // one review per user per book
-}
